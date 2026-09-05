@@ -36,7 +36,7 @@
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (entry.isIntersecting) {
-        entry.target.classList.add("in");
+        entry.target.classList.add(entry.target.classList.contains("develop") ? "live" : "in");
         io.unobserve(entry.target);
       }
     });
@@ -173,7 +173,7 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 2600);
   }
-  document.querySelectorAll(".product-cta").forEach(function (btn) {
+  document.querySelectorAll("button.product-cta").forEach(function (btn) {
     btn.addEventListener("click", function (e) {
       e.preventDefault();
       showToast("ADDED TO YOUR DROP");
@@ -260,12 +260,47 @@
     });
   });
 
-  /* ---------- Forms ---------- */
-  document.querySelectorAll("form[data-join]").forEach(function (form) {
+  /* ---------- The Dispatch / Discord ---------- */
+  document.querySelectorAll("form[data-dispatch]").forEach(function (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      showToast("SENT. WELCOME, EVERYONE.");
-      form.reset();
+      var emailEl = form.querySelector('[name="demail"]');
+      var nameEl = form.querySelector('[name="dname"]');
+      var versesEl = form.querySelector('[name="dverses"]');
+      var name = (nameEl && nameEl.value.trim()) || "Anonymous robber";
+      var email = (emailEl && emailEl.value.trim()) || "no email given";
+      var verses = (versesEl && versesEl.value.trim()) || "no verse sent";
+      var btn = form.querySelector("button[type=submit]");
+      btn.disabled = true;
+
+      var payload = {
+        embeds: [{
+          color: 0xB9975B,
+          author: { name: "DISPATCH" },
+          title: name + " / " + email,
+          description: verses,
+          footer: { text: "ROH / THE DISPATCH" },
+          timestamp: new Date().toISOString()
+        }]
+      };
+
+      function settle(message) {
+        showToast(message);
+        form.reset();
+        btn.disabled = false;
+      }
+
+      if (cfg.discordWebhook) {
+        fetch(cfg.discordWebhook, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+          .then(function (r) { settle(r.ok ? "SENT. THE HOUSE SEES IT." : "THE HOUSE IS BUSY. TRY AGAIN."); })
+          .catch(function () { settle("CONNECTION BROKE. TRY AGAIN."); });
+      } else {
+        settle("NO WEBHOOK SET. PASTE IT IN js/config.js");
+      }
     });
   });
 

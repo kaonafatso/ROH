@@ -37,8 +37,6 @@ body {
   cursor: crosshair;
 }
 
-body.no-cursor, body.no-cursor a, body.no-cursor button { cursor: crosshair; }
-
 ::selection { background: var(--gold); color: var(--bg); }
 
 img { max-width: 100%; display: block; }
@@ -416,7 +414,6 @@ body::before {
 .flame-progress svg { width: 100%; height: 100%; overflow: visible; }
 .flame-progress .wick { fill: var(--cream-dim); }
 .flame-progress .flame { fill: var(--ember); transform-origin: 50% 80%; }
-.flame-progress .glow { fill: url(#flameGrad); }
 @media (max-width: 860px) { .flame-progress { display: none; } }
 
 /* ---------- Footer ---------- */
