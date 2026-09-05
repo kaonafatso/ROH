@@ -15,12 +15,15 @@
   <nav class="nav">
     <div class="nav-inner">
       <a class="wordmark" href="index.html">R<span class="halo">Ø</span>H</a>
-      <button class="nav-burger" aria-label="Menu"><span></span><span></span></button>
       <div class="nav-links">
         <a href="index.html" class="on">The House</a>
         <a href="shop.html">The Closet</a>
         <a href="cause.html">The Cause</a>
         <a href="call.html">The Call</a>
+      </div>
+      <div class="nav-right">
+        <button class="vault-trigger" id="vault-trigger" aria-label="Open the vault">Vault<span class="vault-count" id="vault-count">0</span></button>
+        <button class="nav-burger" aria-label="Menu"><span></span><span></span></button>
       </div>
     </div>
   </nav>
@@ -203,6 +206,37 @@
       </div>
     </div>
   </footer>
+
+  <div class="vault-overlay" id="vault-overlay"></div>
+  <div class="vault" id="vault" aria-hidden="true" role="dialog" aria-label="The Vault">
+    <div class="vault-inner">
+      <div class="vault-head">
+        <div>
+          <span class="label">The Vault</span>
+          <h2>What you <span class="script gold">keep.</span></h2>
+        </div>
+        <button class="vault-close" id="vault-close" aria-label="Close the vault">✕</button>
+      </div>
+      <div class="vault-body">
+        <div class="vault-list" id="vault-list"></div>
+        <div class="vault-empty" id="vault-empty">
+          <p class="script gold">The vault is empty.</p>
+          <p>Open the closet and keep something worth wearing.</p>
+          <a class="btn mt-md" href="shop.html">Enter the closet <span class="arrow">→</span></a>
+        </div>
+      </div>
+      <div class="vault-foot" id="vault-foot">
+        <div class="vault-total"><span>Total</span><span id="vault-total">$0</span></div>
+        <p class="vault-note">Printed to order · sizes confirmed by email · dispatched from the house</p>
+        <form data-vaultform>
+          <div class="field"><label for="vf-name" id="vf-name-label">Name</label><input id="vf-name" name="vname" autocomplete="name"></div>
+          <div class="field"><label for="vf-email" id="vf-email-label">Email</label><input id="vf-email" name="vemail" type="email" autocomplete="email" placeholder="so we can reach you"></div>
+          <div class="field"><label for="vf-notes" id="vf-notes-label">Sizes / notes</label><textarea id="vf-notes" name="vnotes" rows="2" placeholder="S to 2XL · tell us which prints"></textarea></div>
+          <button class="btn" type="submit" style="width:100%;margin-top:1.4rem">Dispatch to the house <span class="arrow">→</span></button>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <div id="toast" role="status"></div>
   <script src="js/roh.js"></script>

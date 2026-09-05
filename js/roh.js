@@ -163,7 +163,7 @@
     flameTick();
   }
 
-  /* ---------- Shop add-to-bag (drop list) ---------- */
+  /* ---------- The Vault (kept cart) ---------- */
   var toast = document.getElementById("toast");
   var toastTimer = null;
   function showToast(msg) {
@@ -173,12 +173,203 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 2600);
   }
-  document.querySelectorAll("button.product-cta").forEach(function (btn) {
+
+  var VAULT_KEY = "roh_vault";
+  var vault = {
+    items: [],
+    load: function () {
+      try { vault.items = JSON.parse(localStorage.getItem(VAULT_KEY)) || []; }
+      catch (e) { vault.items = []; }
+      return vault;
+    },
+    save: function () { localStorage.setItem(VAULT_KEY, JSON.stringify(vault.items)); },
+    count: function () {
+      return vault.items.reduce(function (n, i) { return n + (i.qty || 0); }, 0);
+    },
+    total: function () {
+      return vault.items.reduce(function (t, i) { return t + (i.price || 0) * (i.qty || 0); }, 0);
+    },
+    find: function (id) {
+      return vault.items.filter(function (i) { return i.id === id; })[0];
+    },
+    add: function (card) {
+      var img = card.querySelector(".art img");
+      var nEl = card.querySelector(".product-name");
+      var sEl = card.querySelector(".product-script");
+      var pEl = card.querySelector(".product-price");
+      var name = (nEl && nEl.textContent.trim()) || "Tee";
+      var price = pEl ? parseInt(String(pEl.textContent).replace(/[^0-9]/g, ""), 10) || 0 : 0;
+      var item = vault.find(name);
+      if (item) { item.qty += 1; }
+      else {
+        vault.items.push({
+          id: name,
+          name: name,
+          script: sEl ? sEl.textContent.trim() : "",
+          price: price,
+          img: img ? img.getAttribute("src") : "",
+          qty: 1
+        });
+      }
+      vault.save();
+      vault.render();
+    },
+    remove: function (id) {
+      vault.items = vault.items.filter(function (i) { return i.id !== id; });
+      vault.save();
+      vault.render();
+    },
+    shift: function (id, delta) {
+      var item = vault.find(id);
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty < 1) { vault.remove(id); return; }
+      vault.save();
+      vault.render();
+    },
+    clear: function () { vault.items = []; vault.save(); vault.render(); },
+    render: function () {
+      var list = document.getElementById("vault-list");
+      var empty = document.getElementById("vault-empty");
+      var foot = document.getElementById("vault-foot");
+      var totalEl = document.getElementById("vault-total");
+      var countEl = document.getElementById("vault-count");
+      if (!list) return;
+
+      list.innerHTML = "";
+      vault.items.forEach(function (i) {
+        var div = document.createElement("div");
+        div.className = "vault-item";
+        div.innerHTML =
+          '<div class="art"><img src="' + i.img + '" alt="' + i.name + ' tee"></div>' +
+          '<div class="vault-meta">' +
+            '<div class="product-name">' + i.name + '</div>' +
+            '<div class="product-script">' + (i.script || "") + '</div>' +
+            '<div class="qty" data-id="' + i.id + '">' +
+              '<button type="button" data-act="minus" aria-label="remove one">\u2212</button>' +
+              '<span>' + i.qty + '</span>' +
+              '<button type="button" data-act="plus" aria-label="add one">+</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="vault-side">' +
+            '<span class="vault-price">$' + (i.price * i.qty) + '</span>' +
+            '<button type="button" class="remove" data-id="' + i.id + '">Remove</button>' +
+          '</div>';
+        list.appendChild(div);
+      });
+
+      var has = vault.items.length > 0;
+      if (empty) empty.classList.toggle("show", !has);
+      if (foot) foot.style.display = has ? "" : "none";
+      if (totalEl) totalEl.textContent = "$" + vault.total();
+      if (countEl) {
+        var c = vault.count();
+        countEl.textContent = c;
+        countEl.classList.toggle("show", c > 0);
+      }
+    }
+  };
+  vault.load().render();
+
+  var vaultEl = document.getElementById("vault");
+  var vaultOverlay = document.getElementById("vault-overlay");
+  function vaultOpen() {
+    if (!vaultEl) return;
+    vaultEl.classList.add("open");
+    vaultEl.setAttribute("aria-hidden", "false");
+    if (vaultOverlay) vaultOverlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+  function vaultClose() {
+    if (!vaultEl) return;
+    vaultEl.classList.remove("open");
+    vaultEl.setAttribute("aria-hidden", "true");
+    if (vaultOverlay) vaultOverlay.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+  var vTrigger = document.getElementById("vault-trigger");
+  var vClose = document.getElementById("vault-close");
+  if (vTrigger) vTrigger.addEventListener("click", vaultOpen);
+  if (vaultOverlay) vaultOverlay.addEventListener("click", vaultClose);
+  if (vClose) vClose.addEventListener("click", vaultClose);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") vaultClose();
+  });
+
+  var vaultList = document.getElementById("vault-list");
+  if (vaultList) {
+    vaultList.addEventListener("click", function (e) {
+      var rm = e.target.closest(".remove");
+      if (rm) { vault.remove(rm.getAttribute("data-id")); return; }
+      var qty = e.target.closest(".qty");
+      if (qty) {
+        var id = qty.getAttribute("data-id");
+        var act = e.target.closest("[data-act]");
+        if (act && act.getAttribute("data-act") === "plus") vault.shift(id, 1);
+        if (act && act.getAttribute("data-act") === "minus") vault.shift(id, -1);
+      }
+    });
+  }
+
+  document.querySelectorAll(".product").forEach(function (card) {
+    var btn = card.querySelector("button.product-cta");
+    if (!btn) return;
     btn.addEventListener("click", function (e) {
       e.preventDefault();
-      showToast("ADDED TO YOUR DROP");
       btn.classList.add("added");
       setTimeout(function () { btn.classList.remove("added"); }, 2600);
+      vault.add(card);
+      showToast("KEPT IN THE VAULT");
+      vaultOpen();
+    });
+  });
+
+  document.querySelectorAll("form[data-vaultform]").forEach(function (form) {
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!vault.items.length) { showToast("THE VAULT IS EMPTY."); return; }
+      var nameEl = form.querySelector('[name="vname"]');
+      var emailEl = form.querySelector('[name="vemail"]');
+      var notesEl = form.querySelector('[name="vnotes"]');
+      var name = (nameEl && nameEl.value.trim()) || "Anonymous robber";
+      var email = (emailEl && emailEl.value.trim()) || "no email given";
+      var notes = (notesEl && notesEl.value.trim()) || "no notes";
+      var lines = vault.items.map(function (i) {
+        return i.name + " \u00d7 " + i.qty + " ($" + (i.price * i.qty) + ")";
+      });
+      var description = lines.join("\n") + "\n\nTotal: $" + vault.total() + "\nNotes: " + notes;
+      var btn = form.querySelector("button[type=submit]");
+      btn.disabled = true;
+
+      var payload = {
+        embeds: [{
+          color: 0xB9975B,
+          author: { name: "THE VAULT" },
+          title: name + " / " + email,
+          description: description,
+          footer: { text: "ROH / THE VAULT" },
+          timestamp: new Date().toISOString()
+        }]
+      };
+      var cfg = window.ROH_CONFIG || {};
+      function settle(message, keep) {
+        showToast(message);
+        if (!keep) vault.clear();
+        form.reset();
+        btn.disabled = false;
+        if (!keep) vaultClose();
+      }
+      if (cfg.discordWebhook) {
+        fetch(cfg.discordWebhook, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+          .then(function (r) { settle(r.ok ? "SENT. THE HOUSE SEES IT." : "THE HOUSE IS BUSY. TRY AGAIN.", !r.ok); })
+          .catch(function () { settle("CONNECTION BROKE. TRY AGAIN.", true); });
+      } else {
+        settle("NO WEBHOOK SET. PASTE IT IN js/config.js", true);
+      }
     });
   });
 
