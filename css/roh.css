@@ -507,12 +507,30 @@ body::before {
 .flame-progress .flame { fill: var(--ember); transform-origin: 50% 80%; }
 @media (max-width: 860px) { .flame-progress { display: none; } }
 
+/* ---------- Wall of proof ---------- */
+.wall-proof-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(1.2rem, 2.5vw, 2rem); margin-top: 3rem; }
+@media (max-width: 960px) { .wall-proof-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 620px) { .wall-proof-grid { grid-template-columns: 1fr; } }
+.proof-card { background: var(--bg-raised); border: 1px solid var(--line); padding: clamp(1.6rem, 3vw, 2.4rem); display: flex; flex-direction: column; gap: 1.1rem; opacity: 0; transform: translateY(24px); }
+.proof-card.in { animation: platein 1s var(--ease) both; }
+.proof-card blockquote { font-family: var(--serif); font-style: italic; font-size: 1.12rem; line-height: 1.5; color: var(--cream); flex: 1; }
+.proof-type { align-self: center; border: 1px solid var(--line); padding: 0.3em 0.9em; font-family: var(--narrow); text-transform: uppercase; letter-spacing: 0.22em; font-size: 0.6rem; color: var(--gold); }
+.proof-card figcaption { font-family: var(--narrow); text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.72rem; color: var(--cream-dim); }
+.proof-empty { display: none; margin-top: 3rem; text-align: center; font-family: var(--serif); font-style: italic; color: var(--cream-faint); }
+
 /* ---------- Footer ---------- */
 .footer { border-top: 1px solid var(--line); padding: clamp(3.5rem, 7vw, 6rem) 0 2.6rem; }
 .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 3rem; }
 @media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr; } }
 .footer .wordmark { font-size: clamp(3rem, 9vw, 5.5rem); line-height: 1; }
 .footer-tag { font-family: var(--serif); font-style: italic; font-size: 1.05rem; color: var(--gold); margin-top: 0.6rem; }
+.footer-social { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.6rem; }
+.social-link {
+  border: 1px solid var(--line); padding: 0.6em 1.3em;
+  font-family: var(--narrow); text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.68rem; font-weight: 500; color: var(--cream-dim);
+  transition: all 0.3s ease;
+}
+.social-link:hover { color: var(--bg); background: var(--gold); border-color: var(--gold); }
 .footer h4 { font-family: var(--narrow); text-transform: uppercase; letter-spacing: 0.3em; font-size: 0.7rem; color: var(--cream-faint); margin-bottom: 1.2rem; font-weight: 500; }
 .footer ul { list-style: none; }
 .footer ul li { margin: 0.55em 0; }

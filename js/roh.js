@@ -464,6 +464,20 @@
       var btn = form.querySelector("button[type=submit]");
       btn.disabled = true;
 
+      /* Free email list capture (Buttondown) — fire and forget, no CORS gate */
+      var bdUser = (window.ROH_CONFIG || {}).buttondownUser || "";
+      if (bdUser && emailEl && emailEl.value.trim()) {
+        var fd = new FormData();
+        fd.append("email", emailEl.value.trim());
+        fd.append("embed", "1");
+        if (name && name !== "Anonymous robber") fd.append("metadata__name", name);
+        try {
+          fetch("https://buttondown.com/api/emails/embed-subscribe/" + encodeURIComponent(bdUser), {
+            method: "POST", body: fd, mode: "no-cors"
+          }).catch(function () {});
+        } catch (err) {}
+      }
+
       var payload = {
         embeds: [{
           color: 0xB9975B,
@@ -494,6 +508,51 @@
       }
     });
   });
+
+  /* ---------- Footer social links ---------- */
+  var socialBox = document.getElementById("footer-social");
+  var SOCIALS = [["instagram", "Instagram"], ["tiktok", "TikTok"], ["youtube", "YouTube"], ["spotify", "Spotify"]];
+  if (socialBox) {
+    SOCIALS.forEach(function (pair) {
+      var url = cfg.social && cfg.social[pair[0]];
+      if (!url) return;
+      var a = document.createElement("a");
+      a.className = "social-link";
+      a.href = url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.textContent = pair[1];
+      socialBox.appendChild(a);
+    });
+  }
+
+  /* ---------- Wall of proof (curated testimonials) ---------- */
+  fetch("js/wall.json", { cache: "no-store" })
+    .then(function (r) {
+      if (!r.ok) throw 0;
+      return r.json();
+    })
+    .then(function (data) {
+      var box = document.getElementById("wall-proof");
+      var emptyEl = document.getElementById("wall-proof-empty");
+      if (!box || !data || !data.length) {
+        if (emptyEl) emptyEl.style.display = "";
+        return;
+      }
+      data.forEach(function (item, i) {
+        var card = document.createElement("figure");
+        card.className = "proof-card";
+        card.style.transitionDelay = (i * 0.12) + "s";
+        card.innerHTML =
+          '<span class="proof-type">' + (item.type || "The Wall") + '</span>' +
+          '<blockquote>' + item.message + '</blockquote>' +
+          '<figcaption>' + item.name + '</figcaption>';
+        box.appendChild(card);
+        requestAnimationFrame(function () { card.classList.add("in"); });
+      });
+      if (emptyEl) emptyEl.style.display = "none";
+    })
+    .catch(function () {});
 
   /* ---------- Cause videos ---------- */
   document.querySelectorAll(".video-card").forEach(function (card) {
