@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Cause — RØH</title>
+  <title>The Cause / RØH</title>
   <meta name="description" content="Why RØH exists: how God and the Bible inspired every design. A cause rooted in faith, open to everyone.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,7 +29,7 @@
     <div class="wrap">
       <p class="hero-kicker label">The Cause</p>
       <h1 class="display reveal">WHY WE <span class="script gold">draw.</span></h1>
-      <p class="lead reveal reveal-d1 mt-md">Nothing here is decoration. Every print started in the Word, went through the designer's hands, and came out wearing hope. These films show the process — how God and the Bible inspire the work.</p>
+      <p class="lead reveal reveal-d1 mt-md">Nothing here is decoration. Every print started in the Word, went through the designer's hands, and came out wearing hope. These films show the process, how God and the Bible inspire the work.</p>
       <div class="verse reveal reveal-d2 mt-md">
         <span class="script">“The LORD does not look at the things people look at. People look at the outward appearance, but the LORD looks at the heart.”</span>
         <span class="ref">1 SAMUEL 16:7</span>
@@ -115,23 +115,23 @@
       <div class="plates">
         <div class="plate">
           <span class="ref">97:1</span>
-          <div><h3>Jesus Reigns</h3><p>The LORD reigns; let the earth be glad. Every knee bows to Him — not to the world's thrones, its crowns, or its kings. Print what you bow to.</p></div>
+          <div><h3>Jesus Reigns</h3><p>The LORD reigns; let the earth be glad. Every knee bows to Him. Not to the world's thrones, its crowns, or its kings. Print what you bow to.</p></div>
         </div>
         <div class="plate">
           <span class="ref">14:30</span>
-          <div><h3>Lord Save Me</h3><p>Peter walks toward Christ and begins to sink the moment he looks at the waves. The honest cry — <em>Lord, save me</em> — is the whole gospel in four words.</p></div>
+          <div><h3>Lord Save Me</h3><p>Peter walks toward Christ and begins to sink the moment he looks at the waves. The honest cry, <em>Lord, save me</em>, is the whole gospel in four words.</p></div>
         </div>
         <div class="plate">
           <span class="ref">12:2</span>
-          <div><h3>Renew Your Mind</h3><p>Do not conform to the pattern of this world. Be transformed. The mind is where the battle lives — renew it and the whole life follows.</p></div>
+          <div><h3>Renew Your Mind</h3><p>Do not conform to the pattern of this world. Be transformed. The mind is where the battle lives. Renew it and the whole life follows.</p></div>
         </div>
         <div class="plate">
           <span class="ref">5:17</span>
-          <div><h3>Dragonfly</h3><p>If anyone is in Christ, they are a new creation. The dragonfly leaves the water behind completely — old things passed away, all things new.</p></div>
+          <div><h3>Dragonfly</h3><p>If anyone is in Christ, they are a new creation. The dragonfly leaves the water behind completely. Old things passed away, all things new.</p></div>
         </div>
         <div class="plate">
           <span class="ref">5:1</span>
-          <div><h3>Lady Liberty</h3><p>It is for freedom that Christ set us free. A torch in one hand, liberty in the other — but the light is not our own.</p></div>
+          <div><h3>Lady Liberty</h3><p>It is for freedom that Christ set us free. A torch in one hand, liberty in the other, but the light is not our own.</p></div>
         </div>
         <div class="plate">
           <span class="ref">22:2</span>
@@ -148,10 +148,10 @@
           <div>
             <span class="label reveal">The Wall</span>
             <h2 class="display reveal reveal-d1" style="font-size:clamp(2rem,5vw,3.4rem)">A door with <span class="script gold">no lock.</span></h2>
-            <p class="lead reveal reveal-d2 mt-md">This isn't a members-only house. Everyone is welcome — believer, doubter, the one halfway out of the water. Leave a prayer, leave a testimony, or just sit in the room for a while.</p>
+            <p class="lead reveal reveal-d2 mt-md">This isn't a members-only house. Everyone is welcome: believer, doubter, the one halfway out of the water. Leave a prayer, a testimony, or a word of encouragement. It lands straight in the house Discord, read and held by the family.</p>
             <div class="mt-lg">
-              <span class="label reveal">Next print — your vote</span>
-              <div class="chips mt-md reveal reveal-d1">
+              <span class="label reveal">Next print / your vote</span>
+              <div class="chips mt-md reveal reveal-d1" data-vote>
                 <button class="chip">Lord Save Me</button>
                 <button class="chip">Lady Liberty</button>
                 <button class="chip">Renew Your Mind</button>
@@ -160,17 +160,24 @@
               </div>
             </div>
           </div>
-          <form data-join>
+          <form data-discord>
+            <span class="label">What is it?</span>
+            <div class="chips mt-md" role="radiogroup">
+              <label class="chip hold"><input type="radio" name="wtype" value="Prayer request" checked hidden>Prayer request</label>
+              <label class="chip"><input type="radio" name="wtype" value="Testimony" hidden>Testimony</label>
+              <label class="chip"><input type="radio" name="wtype" value="Encouragement" hidden>Encouragement</label>
+            </div>
             <div class="field">
               <label for="w-name">Name</label>
-              <input id="w-name" name="name" type="text" placeholder="Your name" autocomplete="name">
+              <input id="w-name" name="wname" type="text" placeholder="Your name" autocomplete="name">
             </div>
             <div class="field">
-              <label for="w-msg">Prayer or testimony</label>
-              <textarea id="w-msg" name="msg" rows="6" placeholder="Write what's on your heart."></textarea>
+              <label for="w-msg">What's on your heart</label>
+              <textarea id="w-msg" name="wmsg" rows="6" placeholder="Write it here. The house reads it."></textarea>
             </div>
-            <button class="btn mt-md" type="submit">Leave it on the wall <span class="arrow">→</span></button>
-            <p style="margin-top:1.4rem;font-family:var(--serif);font-style:italic;color:var(--cream-faint)">No account. No gate. Read by the house, held in prayer.</p>
+            <button class="btn mt-md" type="submit">Put it on the wall <span class="arrow">→</span></button>
+            <a id="discord-link" class="btn btn-ghost mt-md" href="#" style="display:none">Open the Discord <span class="arrow">→</span></a>
+            <p style="margin-top:1.4rem;font-family:var(--serif);font-style:italic;color:var(--cream-faint)">No account, no gate. It posts straight to the house Discord, held in prayer.</p>
           </form>
         </div>
       </div>
@@ -182,7 +189,7 @@
       <div class="footer-grid">
         <div>
           <div class="wordmark">R<span class="halo">Ø</span>H</div>
-          <div class="footer-tag">Robbers of Hell — See different. Live purposely.</div>
+          <div class="footer-tag">Robbers of Hell / See different. Live purposely.</div>
         </div>
         <div>
           <h4>The House</h4>
@@ -220,6 +227,7 @@
   </div>
 
   <div id="toast" role="status"></div>
+  <script src="js/config.js"></script>
   <script src="js/roh.js"></script>
 </body>
 </html>

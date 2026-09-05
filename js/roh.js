@@ -1,5 +1,5 @@
 /* ============================================================
-   ROH — shared interactions.
+   ROH / shared interactions.
    Small, quiet, deliberate. Nothing shouts.
    ============================================================ */
 (function () {
@@ -189,7 +189,74 @@
       if (!chip) return;
       group.querySelectorAll(".chip").forEach(function (c) { c.classList.remove("hold"); });
       chip.classList.add("hold");
-      showToast("VOTE RECORDED. THANK YOU.");
+      if (group.hasAttribute("data-vote")) {
+        showToast("VOTE RECORDED. " + chip.textContent.trim().toUpperCase());
+      }
+    });
+  });
+
+  /* ---------- The Wall / Discord ---------- */
+  var cfg = window.ROH_CONFIG || {};
+
+  var dlink = document.getElementById("discord-link");
+  if (dlink && cfg.discordInvite) {
+    dlink.href = cfg.discordInvite;
+    dlink.style.display = "inline-flex";
+  }
+
+  var WALL_COLORS = { "Prayer request": 0xB9975B, "Testimony": 0xD8723A, "Encouragement": 0xECE6DA };
+
+  function wallReset(form) {
+    form.reset();
+    form.querySelectorAll(".chip").forEach(function (c) { c.classList.remove("hold"); });
+    var first = form.querySelector('input[type="radio"]');
+    if (first) { first.checked = true; var host = first.closest(".chip"); if (host) host.classList.add("hold"); }
+  }
+
+  document.querySelectorAll("form[data-discord]").forEach(function (form) {
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var nameEl = form.querySelector('[name="wname"]');
+      var msgEl = form.querySelector('[name="wmsg"]');
+      var typeEl = form.querySelector('input[name="wtype"]:checked');
+      var name = (nameEl && nameEl.value.trim()) || "Anonymous robber";
+      var msg = (msgEl && msgEl.value.trim()) || "";
+      var type = typeEl ? typeEl.value : "Prayer request";
+      if (!msg) { showToast("WRITE SOMETHING ON THE WALL FIRST."); return; }
+      var btn = form.querySelector("button[type=submit]");
+      btn.disabled = true;
+
+      var payload = {
+        embeds: [{
+          color: WALL_COLORS[type] || 0xECE6DA,
+          author: { name: type.toUpperCase() },
+          title: name,
+          description: msg,
+          footer: { text: "ROH / THE WALL" },
+          timestamp: new Date().toISOString()
+        }]
+      };
+
+      function settle(message) {
+        showToast(message);
+        wallReset(form);
+        btn.disabled = false;
+      }
+
+      if (cfg.discordWebhook) {
+        fetch(cfg.discordWebhook, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+          .then(function (r) {
+            if (r.ok) settle("ON THE WALL. THE HOUSE SEES IT.");
+            else settle("THE WALL IS FULL RIGHT NOW. TRY AGAIN.");
+          })
+          .catch(function () { settle("CONNECTION BROKE. TRY AGAIN."); });
+      } else {
+        settle("NO WEBHOOK SET. PASTE IT IN js/config.js");
+      }
     });
   });
 
@@ -197,7 +264,7 @@
   document.querySelectorAll("form[data-join]").forEach(function (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      showToast("SENT. WELCOME — EVERYONE IS WELCOME.");
+      showToast("SENT. WELCOME, EVERYONE.");
       form.reset();
     });
   });
@@ -209,7 +276,7 @@
     if (!video) return;
     play.addEventListener("click", function () {
       if (video.readyState === 0 || video.error) {
-        showToast("FILM LOADING IN THE DARKROOM — SOON");
+        showToast("FILM LOADING IN THE DARKROOM. SOON");
         return;
       }
       card.classList.add("playing");
